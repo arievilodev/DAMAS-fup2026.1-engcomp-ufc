@@ -18,4 +18,4 @@ clean:
 		rm -f *.o main.exe main
 
 clean_win:
-		del /Q *.0 main.exe main
+		del /Q *.o main.exe main
