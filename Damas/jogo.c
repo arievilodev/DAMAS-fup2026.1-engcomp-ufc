@@ -53,8 +53,8 @@ short int verifica_derrota_por_afogamento(Jogador jogador, PontTab tabuleiro, in
         for (casa.col=0; casa.col<10 && qtd_pecas; casa.col++)
             if (tabuleiro[casa.lin][casa.col] == jogador.peao || tabuleiro[casa.lin][casa.col] == jogador.dama) {
                 qtd_pecas--;
-                if (da_para_comer(tabuleiro, jogador, casa)) return 0;
                 if (da_para_mover(tabuleiro, jogador, casa)) return 0; 
+                if (da_para_comer(tabuleiro, jogador, casa)) return 0;
             }
     return 1;
 }
@@ -62,6 +62,4 @@ short int verifica_derrota_por_afogamento(Jogador jogador, PontTab tabuleiro, in
 void jogo_JxJ() {
     char jogador_atual_aux, vitorioso = '\0';
     char tabuleiro[10][10];
-
-    return 0;
 }
