@@ -48,14 +48,15 @@ short int da_para_mover(PontTab tabuleiro, Jogador jogador, Casa casa) {
 
 short int verifica_derrota_por_afogamento(Jogador jogador, PontTab tabuleiro, int qtd_pecas) {
     Casa casa;
+    /* Pecorre o tabuleiro ate o final ou ate as pecas acabarem */
     for (casa.lin=0; casa.lin<10 && qtd_pecas; casa.lin++)
         for (casa.col=0; casa.col<10 && qtd_pecas; casa.col++)
             if (tabuleiro[casa.lin][casa.col] == jogador.peao || tabuleiro[casa.lin][casa.col] == jogador.dama) {
                 qtd_pecas--;
-                if (da_para_comer(tabuleiro, jogador, casa)) return 1;
-                if (da_para_mover(tabuleiro, jogador, casa)) return 1; 
+                if (da_para_comer(tabuleiro, jogador, casa)) return 0;
+                if (da_para_mover(tabuleiro, jogador, casa)) return 0; 
             }
-    return 0;
+    return 1;
 }
 
 void jogo_JxJ() {
