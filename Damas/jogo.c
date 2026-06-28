@@ -63,7 +63,42 @@ short int verifica_derrota_por_afogamento(Jogador jogador, PontTab tabuleiro, in
     return 1;
 }
 
-void jogo_JxJ() {
-    char jogador_atual_aux, vitorioso = '\0';
-    char tabuleiro[10][10];
+short int pecas_Jogador_id(Jogador *jogador, char id) {
+    /* Retorna 1 se nao alterar jogador, se nao retorna 0 */
+    switch (id) {
+        case 'C':
+            jogador->id = 'C';
+            jogador->peao = 'o';
+            jogador->dama = 'O';
+            return 0;
+        case 'B':
+            jogador->id = 'B';
+            jogador->peao = '@';
+            jogador->dama = '&';
+            return 0;
+        }
+    return 1;
+}
+
+short int jogo_JxJ() {
+    char vitorioso = '\0', comeca, sair;
+    PontTab tabuleiro;
+    Jogador jogador;
+
+    tabuleiro = criar_tabuleiro();
+
+    printf("Digite quem começa o jogo (\"C\", para cima ou \"B\", para baixo): ");
+    scanf("%c", &comeca);
+    while(pecas_Jogador_id(&jogador, comeca)) {
+        printf("\nEntrada Invalida\nDigite quem começa o jogo (\"C\", para cima ou \"B\", para baixo): ");
+        scanf("%c", &comeca);
+    }
+
+    printf("Deseja jogar novamente? (\"s\", para sim ou \"n\", para nao): ");
+    scanf("%c", &sair);
+    while(sair != 's' && sair != 'n') {
+        printf("\nEntrada Invalida\nDeseja jogar novamente? (\"s\", para sim ou \"n\", para nao): ");
+        scanf("%c", &sair);
+    }
+    return sair=='s';
 }

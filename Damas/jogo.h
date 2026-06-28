@@ -13,7 +13,7 @@
 
 #include <stdio.h>
 
-void jogo_JxJ();
+short int jogo_JxJ();
 
 void jogo_offline(FILE arquivo);
 
