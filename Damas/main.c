@@ -32,7 +32,7 @@ int main (int narg, char *argv[]) {
     }else{ /* opcao com entrada padrao */
 
         /* chama a função de jogo.c */
-        jogo_JxJ();
+        while(jogo_JxJ());
     }
 
     return EXIT_SUCCESS;
