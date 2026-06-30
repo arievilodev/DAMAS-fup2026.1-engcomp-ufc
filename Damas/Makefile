@@ -1,7 +1,7 @@
 ALL: main
 
-main:	main.o jogo.o tabuleiro.o jogada.o
-		gcc -std=c89 -pedantic-errors -Wall -Wextra main.o jogo.o tabuleiro.o jogada.o -o main
+damas:	main.o jogo.o tabuleiro.o jogada.o
+		gcc -std=c89 -pedantic-errors -Wall -Wextra main.o jogo.o tabuleiro.o jogada.o -o damas
 
 main.o:	main.c jogo.h
 		gcc -std=c89 -pedantic-errors -Wall -Wextra -c main.c
@@ -16,7 +16,7 @@ jogada.o: jogada.c jogada.h tabuleiro.h
 		gcc -std=c89 -pedantic-errors -Wall -Wextra -c jogada.c
 
 clean:
-		rm -f *.o main.exe main
+		rm -f *.o damas.exe damas
 
 clean_win:
-		del /Q *.o main.exe main
+		del /Q *.o damas.exe damas

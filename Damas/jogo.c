@@ -227,5 +227,6 @@ short int jogo_JxJ() {
 }
 
 void jogo_offline(FILE* arquivo) {
-    ;
+    char c; /* auxiliar para coleta dos caracteres do arquivo */
+    int linha=0; /* acumulador para saber em qual linha esta */
 }
