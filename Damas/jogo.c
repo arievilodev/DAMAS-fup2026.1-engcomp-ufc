@@ -12,9 +12,32 @@
 #include "tabuleiro.h"
 #include "jogada.h"
 
+short int eh_letra_tabuleiro(char c) {
+    /* retorna se eh uma letra dentro do tabuleiro */
+    return c >= 'A' && c <= 'J';
+}
+
+short int eh_numero_tabuleiro(char n) {
+    /* retorna se eh um numero dentro do tabuleiro */
+    return n >= '0' && n <= '9';
+}
+
+short int not_in_str(char *v, char c) {
+    /* retorna se o carctere nao esta no vetor */
+    int i=0;
+    while(v[i] != '/0')
+        if (v[i++] == c) return 0;
+    return 1;
+}
+
 int letra_para_numero(char c) {
-    /* retorna a ordenada que a letra representa, por exemplo, A=0, B=1, ..., J=9 */
+    /* retorna a abscissa que a letra representa, por exemplo, A=0, B=1, ..., J=9 */
     return c-'A';
+}
+
+int char_para_numero(char n) {
+    /* retorna a ordenada que o numero representa, no caso, o proprio numero */
+    return n-'0';
 }
 
 short int verifica_vitoria_por_qtd(int qtd_oponente) {
@@ -64,7 +87,7 @@ short int verifica_derrota_por_afogamento(Jogador jogador, PontTab tabuleiro, in
 }
 
 short int pecas_Jogador_id(Jogador *jogador, char id) {
-    /* Retorna 1 se nao alterar jogador, se nao retorna 0 */
+    /* Retorna 1 se nao alterar jogador, se sim retorna 0 */
     switch (id) {
         case 'C':
             jogador->id = 'C';
@@ -81,17 +104,61 @@ short int pecas_Jogador_id(Jogador *jogador, char id) {
 }
 
 short int jogo_JxJ() {
-    char vitorioso = '\0', comeca, sair;
+    short int jogada_valida;
+    char vitorioso = '\0',
+        c, /* auxiliar para deletar buffer exedente */
+        comeca,
+        sair,
+        entrada_jogada[8]; /* contando \n e \0 */
     PontTab tabuleiro;
     Jogador jogador;
+    Casa casa_inicial, casa_final;
 
     tabuleiro = criar_tabuleiro();
+
+    imprimir_tabuleiro(tabuleiro);
 
     printf("Digite quem começa o jogo (\"C\", para cima ou \"B\", para baixo): ");
     scanf("%c", &comeca);
     while(pecas_Jogador_id(&jogador, comeca)) {
         printf("\nEntrada Invalida\nDigite quem começa o jogo (\"C\", para cima ou \"B\", para baixo): ");
         scanf("%c", &comeca);
+    }
+    
+    /* Loop das jogadas */
+    while (vitorioso == '\n') {
+        /* Faz a leitura da jogada */
+        jogada_valida = 0;
+        while (!jogada_valida) {
+            if (fgets(entrada_jogada, sizeof(entrada_jogada), stdin) != NULL) {
+                if (not_in_str(entrada_jogada, '\n')) {
+                    /* Descarta o buffer */
+                    while ((c = getchar()) != '\n' && c != EOF);
+
+                    printf("Entrada invalida!\n"); /* Se tiver mais caracteres na entrada que 6 */
+                } else if (
+                    eh_letra_tabuleiro(tabuleiro[0]) &&
+                    eh_numero_tabuleiro(tabuleiro[1]) &&
+                    tabuleiro[2] == '-' && tabuleiro[3] == '-' &&
+                    eh_letra_tabuleiro(tabuleiro[4]) &&
+                    eh_numero_tabuleiro(tabuleiro[5])
+                ) {
+                    casa_inicial.lin = letra_para_numero(tabuleiro[0]);
+                    casa_inicial.col = char_para_numero(tabuleiro[1]);
+                    casa_final.lin = letra_para_numero(tabuleiro[4]);
+                    casa_final.col = char_para_numero(tabuleiro[5]);
+                    if (jogada(tabuleiro, jogador, casa_inicial, casa_final) != -1) {
+                        jogada_valida = 1;
+                    } else {
+                        printf("Entrada invalida!\n"); /* Se nao estiver for uma jogada permitida */
+                    }
+                } else {
+                    printf("Entrada invalida!\n"); /* Se nao estiver no padrao A0--B0 */
+                }
+            } else {
+                printf("Entrada invalida!\n"); /* Se a entrada for EOF */
+            }
+        }
     }
 
     printf("Deseja jogar novamente? (\"s\", para sim ou \"n\", para nao): ");
