@@ -31,48 +31,11 @@ typedef struct {
     int col;
 } Casa;
 
-/* Verifica se a peça pertence ao jogador informado. */
-short int peca_do_jogador(char peca, Jogador jogador);
-
-/* Verifica se a peça pertence ao adversário do jogador informado. */
-short int peca_adversaria(char peca, Jogador jogador);
-
-/*
-    Verifica se um movimento simples (sem captura)
-    é válido de acordo com as regras do jogo.
-*/
-short int mover_eh_valido(
-    PontTab tab,
-    Jogador jogador,
-    Casa inicial,
-    Casa final
-);
-
-/*
-    Verifica se uma captura é válida.
-    Considera tanto peões quanto damas.
-*/
-short int comer_eh_valido(
-    PontTab tab,
-    Jogador jogador,
-    Casa inicial,
-    Casa final
-);
-
 /*
     Verifica se existe pelo menos uma captura
     possível para a peça indicada.
 */
 short int da_para_comer(
-    PontTab tab,
-    Jogador jogador,
-    Casa casa
-);
-
-/*
-    Verifica se a peça possui algum movimento legal.
-*/
-short int da_para_mover(
     PontTab tab,
     Jogador jogador,
     Casa casa
@@ -86,7 +49,7 @@ short int da_para_mover(
      0 -> movimento simples realizado
      1 -> captura realizada
 */
-int jogada(
+short int jogada(
     PontTab tab,
     Jogador jogador,
     Casa inicial,
