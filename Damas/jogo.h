@@ -15,6 +15,6 @@
 
 short int jogo_JxJ();
 
-void jogo_offline(FILE arquivo);
+void jogo_offline(FILE*);
 
 #endif

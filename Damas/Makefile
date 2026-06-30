@@ -10,9 +10,10 @@ jogo.o:	jogo.c jogo.h tabuleiro.h jogada.h
 		gcc -std=c89 -pedantic-errors -Wall -Wextra -c jogo.c
 
 tabuleiro.o: tabuleiro.c tabuleiro.h
-		gcc -std=c89 -pedantic-errors -Wall _Wextra -c tabuleiro.c
+		gcc -std=c89 -pedantic-errors -Wall -Wextra -c tabuleiro.c
 
 jogada.o: jogada.c jogada.h tabuleiro.h
+		gcc -std=c89 -pedantic-errors -Wall -Wextra -c jogada.c
 
 clean:
 		rm -f *.o main.exe main

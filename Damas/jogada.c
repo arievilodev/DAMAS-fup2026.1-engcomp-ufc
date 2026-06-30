@@ -1,4 +1,4 @@
-/*
+/*nao verifica todas se todas as pecas alguma pode comer e dama nao come corretaente quando esta ah mais de uma casa de distancia
     Codigo feito em 2026.1 pelos estudantes
     Ana Rebeca Mendes de Souza (602242)
     Arthur Araujo Custodio (604827)
