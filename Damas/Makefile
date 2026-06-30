@@ -1,4 +1,4 @@
-ALL: main
+ALL: damas
 
 damas:	main.o jogo.o tabuleiro.o jogada.o
 		gcc -std=c89 -pedantic-errors -Wall -Wextra main.o jogo.o tabuleiro.o jogada.o -o damas

@@ -40,7 +40,7 @@ int char_para_numero(char n) {
     return n-'0';
 }
 
-short int da_para_mover_1(PontTab tabuleiro, Jogador jogador, Casa casa) {
+short int da_para_mover_1_casa(PontTab tabuleiro, Jogador jogador, Casa casa) {
     /*
         Verifica se essa peca pode se mover pelo menos uma casa (no caso das damas podem se mover mais que uma casa, mas basta uma para nao estar afogada).
         Verifica qual jogador eh, para saber se move para cima ou para baixo
@@ -75,7 +75,7 @@ short int verifica_derrota_por_afogamento(PontTab tabuleiro, Jogador jogador) {
     for (casa.lin=0; casa.lin<10; casa.lin++)
         for (casa.col=0; casa.col<10; casa.col++)
             if (tabuleiro[casa.lin][casa.col] == jogador.peao || tabuleiro[casa.lin][casa.col] == jogador.dama) {
-                if (da_para_mover_1(tabuleiro, jogador, casa)) return 0; 
+                if (da_para_mover_1_casa(tabuleiro, jogador, casa)) return 0; 
                 if (da_para_comer(tabuleiro, jogador, casa)) return 0;
             }
     return 1;
