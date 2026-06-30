@@ -214,6 +214,7 @@ short int jogo_JxJ() {
             vitorioso = jogador.id;
         }
     }
+    imprimir_tabuleiro(tabuleiro);
     printf("O vencedor eh o usuario de ");
     printf((vitorioso == 'C') ? "CIMA.\n" : "BAIXO.\n");
 
