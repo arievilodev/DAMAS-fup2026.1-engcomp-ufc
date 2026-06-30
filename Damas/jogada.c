@@ -1,11 +1,11 @@
-/*
+/*nao verifica todas se todas as pecas alguma pode comer e dama nao come corretaente quando esta ah mais de uma casa de distancia
     Codigo feito em 2026.1 pelos estudantes
     Ana Rebeca Mendes de Souza (602242)
     Arthur Araujo Custodio (604827)
     Rafael Calisto Oliveira da Silva (606478)
 */
 
-#include <stdlib.h>
+#include <stdlib.h>     /* Utilizado para a função abs() */
 #include "jogada.h"
 
 /*
@@ -23,46 +23,16 @@ short int peca_do_jogador(char peca, Jogador jogador)
 /*
     Verifica se o caractere representa uma peça
     do adversário.
+
+    Espaços vazios e casas não jogáveis ('#')
+    não são considerados peças.
 */
 short int peca_adversaria(char peca, Jogador jogador)
 {
-    if(peca == ' ' || peca == '#')
+    if (peca == ' ' || peca == '#')
         return 0;
 
     return !peca_do_jogador(peca, jogador);
-}
-
-/*
-    Verifica se existe alguma peça do jogador
-    que possua captura obrigatória.
-*/
-static short int jogador_tem_captura(
-    PontTab tab,
-    Jogador jogador
-)
-{
-    Casa casa;
-
-    for(casa.lin = 0; casa.lin < 10; casa.lin++)
-    {
-        for(casa.col = 0; casa.col < 10; casa.col++)
-        {
-            if(peca_do_jogador(
-                tab[casa.lin][casa.col],
-                jogador))
-            {
-                if(da_para_comer(
-                    tab,
-                    jogador,
-                    casa))
-                {
-                    return 1;
-                }
-            }
-        }
-    }
-
-    return 0;
 }
 
 /*
@@ -75,25 +45,24 @@ short int mover_eh_valido(
     Casa final
 )
 {
+    /* Diferença entre origem e destino */
     int dl = final.lin - inicial.lin;
     int dc = final.col - inicial.col;
 
-    /* O destino deve estar vazio */
+    /* A casa de destino precisa estar vazia */
     if(tab[final.lin][final.col] != ' ')
         return 0;
 
-    /* -------------------- DAMA -------------------- */
-
+    /* Movimento de dama */
     if(tab[inicial.lin][inicial.col] == jogador.dama)
     {
         int sl, sc;
         int l, c;
 
-        /* Deve mover em diagonal */
+        /* O deslocamento deve ocorrer em uma diagonal */
         if(abs(dl) != abs(dc))
             return 0;
-
-        sl = (dl > 0) ? 1 : -1;
+                sl = (dl > 0) ? 1 : -1;
         sc = (dc > 0) ? 1 : -1;
 
         l = inicial.lin + sl;
@@ -111,18 +80,18 @@ short int mover_eh_valido(
             l += sl;
             c += sc;
         }
-
+        
         return 1;
     }
 
-    /* -------------------- PEÃO -------------------- */
-
+    /* Movimento do jogador de cima */
     if(jogador.id == 'C')
     {
         if(dl == 1 && abs(dc) == 1)
             return 1;
     }
 
+    /* Movimento do jogador de baixo */
     if(jogador.id == 'B')
     {
         if(dl == -1 && abs(dc) == 1)
@@ -145,7 +114,7 @@ short int comer_eh_valido(
     int dl = final.lin - inicial.lin;
     int dc = final.col - inicial.col;
 
-    /* destino deve estar vazio */
+    /* O destino deve estar vazio */
     if(tab[final.lin][final.col] != ' ')
         return 0;
 
@@ -153,25 +122,27 @@ short int comer_eh_valido(
     if(abs(dl) != abs(dc))
         return 0;
 
-    /* ---------- PEÃO ---------- */
-
+    /* Captura realizada por um peão */
     if(tab[inicial.lin][inicial.col] == jogador.peao)
     {
+        /* O peão deve saltar exatamente duas casas */
         int ml;
         int mc;
 
         if(abs(dl) != 2)
             return 0;
 
+        /* Calcula a posição da peça capturada */
         ml = (inicial.lin + final.lin) / 2;
         mc = (inicial.col + final.col) / 2;
 
         return peca_adversaria(tab[ml][mc], jogador);
     }
 
-    /* ---------- DAMA ---------- */
+    /* Captura realizada por uma dama */
 
     {
+        /* Sentido do deslocamento */
         int sl = (dl > 0) ? 1 : -1;
         int sc = (dc > 0) ? 1 : -1;
 
@@ -180,6 +151,10 @@ short int comer_eh_valido(
 
         int encontrou = 0;
 
+        /*
+            Percorre toda a diagonal procurando
+            exatamente uma peça adversária.
+        */
         while(l != final.lin)
         {
             if(tab[l][c] != ' ')
@@ -187,11 +162,11 @@ short int comer_eh_valido(
                 /* peça do próprio jogador bloqueia */
                 if(peca_do_jogador(tab[l][c], jogador))
                     return 0;
-
+                
                 /* segunda peça adversária impede captura */
                 if(encontrou)
                     return 0;
-
+                
                 encontrou = 1;
             }
 
@@ -357,3 +332,138 @@ short int da_para_mover(
     }
 }
 
+/*
+    Verifica se existe alguma peça do jogador
+    que possua captura obrigatória.
+*/
+short int jogador_tem_captura(
+    PontTab tab,
+    Jogador jogador
+)
+{
+    Casa casa;
+
+    for(casa.lin = 0; casa.lin < 10; casa.lin++)
+    {
+        for(casa.col = 0; casa.col < 10; casa.col++)
+        {
+            if(peca_do_jogador(
+                tab[casa.lin][casa.col],
+                jogador))
+            {
+                if(da_para_comer(
+                    tab,
+                    jogador,
+                    casa))
+                {
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+/*
+    Valida e executa uma jogada.
+
+    Retorna:
+        -1 -> jogada inválida
+         0 -> movimento simples
+         1 -> captura
+*/
+short int jogada(
+    PontTab tab,
+    Jogador jogador,
+    Casa inicial,
+    Casa final
+)
+{
+    int l;
+    int c;
+
+    /* Verifica se origem e destino pertencem ao tabuleiro */
+    if(!dentro_do_tabuleiro(inicial.lin, inicial.col))
+        return -1;
+
+    if(!dentro_do_tabuleiro(final.lin, final.col))
+        return -1;
+
+    /* Confere se a peça pertence ao jogador da vez */
+    if(!peca_do_jogador(tab[inicial.lin][inicial.col], jogador))
+        return -1;
+
+    /* Caso exista captura disponível, ela será obrigatória */
+    if(jogador_tem_captura(tab, jogador))
+    {
+        if(!comer_eh_valido(tab, jogador, inicial, final))
+            return -1;
+
+        /* Remove a peça capturada pelo peão */
+        if(tab[inicial.lin][inicial.col] == jogador.peao)
+        {
+            l = (inicial.lin + final.lin)/2;
+            c = (inicial.col + final.col)/2;
+
+            tab[l][c] = ' ';
+        }
+        else
+        {
+            /* Procura e remove a peça capturada pela dama */
+            int sl = (final.lin > inicial.lin) ? 1 : -1;
+            int sc = (final.col > inicial.col) ? 1 : -1;
+
+            l = inicial.lin + sl;
+            c = inicial.col + sc;
+
+            while(l != final.lin)
+            {
+                if(peca_adversaria(tab[l][c], jogador))
+                {
+                    tab[l][c] = ' ';
+                    break;
+                }
+
+                l += sl;
+                c += sc;
+            }
+        }
+
+        /* Move a peça para o destino */
+        tab[final.lin][final.col] =
+            tab[inicial.lin][inicial.col];
+
+        /* Libera a casa de origem */
+        tab[inicial.lin][inicial.col] = ' ';
+
+        return 1;
+    }
+
+    /* Caso não haja captura, verifica movimento simples */
+    if(!mover_eh_valido(tab, jogador, inicial, final))
+        return -1;
+
+    /* Move a peça */
+    tab[final.lin][final.col] =
+        tab[inicial.lin][inicial.col];
+
+    tab[inicial.lin][inicial.col] = ' ';
+
+    /* Promove o peão a dama ao alcançar a última linha */
+    if(jogador.id == 'C' &&
+       final.lin == 9 &&
+       tab[final.lin][final.col] == jogador.peao)
+    {
+        tab[final.lin][final.col] = jogador.dama;
+    }
+
+    if(jogador.id == 'B' &&
+       final.lin == 0 &&
+       tab[final.lin][final.col] == jogador.peao)
+    {
+        tab[final.lin][final.col] = jogador.dama;
+    }
+
+    return 0;
+}
