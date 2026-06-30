@@ -19,4 +19,4 @@ clean:
 		rm -f *.o damas.exe damas
 
 clean_win:
-		del /Q *.o damas.exe damas
+		del /Q *.o *.exe damas
