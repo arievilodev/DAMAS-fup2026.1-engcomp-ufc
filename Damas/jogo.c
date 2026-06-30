@@ -103,6 +103,23 @@ short int pecas_Jogador_id(Jogador *jogador, char id) {
     return 1;
 }
 
+short int peca_para_dama(PontTab tabuleiro, Jogador jogador) {
+    int linha, j; /* linha que vai ser verificada se da para transformar em dama */
+    if (jogador.id == 'C')
+        linha = 0;
+    else if (jogador.id == 'B')
+        linha = 9;
+    else
+        return -1;
+    
+    for (j=0; j<10; j++)
+        if (tabuleiro[linha][j] == jogador.peao) {
+            tabuleiro[linha][j] = jogador.dama;
+            return 1;
+        }
+    return 0;
+}
+
 short int jogo_JxJ() {
     short int jogada_valida;
     char vitorioso = '\0',
