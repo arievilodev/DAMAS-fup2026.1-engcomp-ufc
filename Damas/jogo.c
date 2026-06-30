@@ -48,7 +48,7 @@ short int da_para_mover(PontTab tabuleiro, Jogador jogador, Casa casa) {
     /*
         Verifica se essa peca pode se mover pelo menos uma casa (no caso das damas podem se mover mais que uma casa, mas basta uma para nao estar afogada).
         Verifica qual jogador eh, para saber se move para cima ou para baixo
-        e verifica se é um peao ou uma dama
+        e verifica se eh um peao ou uma dama
     */
     if ((jogador.id == 'C' && jogador.peao == tabuleiro[casa.lin][casa.col]) || jogador.dama == tabuleiro[casa.lin][casa.col]) {
         /* diagonal para baixo esquerda */
@@ -109,7 +109,7 @@ short int jogo_JxJ() {
         c, /* auxiliar para deletar buffer exedente */
         comeca,
         sair,
-        entrada_jogada[8]; /* contando \n e \0 */
+        entrada_jogada[8]; /* sao 8 contando \n e \0 */
     PontTab tabuleiro;
     Jogador jogador;
     Casa casa_inicial, casa_final;
@@ -130,6 +130,8 @@ short int jogo_JxJ() {
         /* Faz a leitura da jogada */
         jogada_valida = 0;
         while (!jogada_valida) {
+            imprimir_tabuleiro(tabuleiro);
+            printf("Entre com a jogada do jogador %c: ", jogador.id);
             if (fgets(entrada_jogada, sizeof(entrada_jogada), stdin) != NULL) {
                 if (not_in_str(entrada_jogada, '\n')) {
                     /* Descarta o buffer */
