@@ -4,8 +4,8 @@
     Arthur Araujo Custodio (604827)
     Rafael Calisto Oliveira da Silva (606478)
 */
-#ifndef tabuleiro_h
-#define tabuleiro_h
+#ifndef TABULEIRO_H
+#define TABULEIRO_H
 
 typedef char (*PontTab)[10]; /* define o vetor de ponteiros como um tipo de dado */
 
