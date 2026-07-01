@@ -1,3 +1,10 @@
+#   
+#	Codigo feito em 2026.1 pelos estudantes
+#	Ana Rebeca Mendes de Souza (602242)
+#	Arthur Araujo Custodio (604827)
+#	Rafael Calisto Oliveira da Silva (606478)
+#
+
 ALL: damas
 
 damas:	main.o jogo.o tabuleiro.o jogada.o
