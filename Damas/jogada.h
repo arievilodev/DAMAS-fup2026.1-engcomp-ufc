@@ -11,7 +11,7 @@
 #include "tabuleiro.h"
 
 /*
-    Estrutura que representa um jogador.
+    estrutura que representa um jogador.
 
     id   -> identifica o jogador ('C' para cima ou 'B' para baixo)
     peao -> caractere utilizado para representar um peão
@@ -24,7 +24,7 @@ typedef struct {
 } Jogador;
 
 /*
-    Representa uma posição do tabuleiro através da linha e da coluna.
+    representa uma posição do tabuleiro através da linha e da coluna.
 */
 typedef struct {
     int lin;
@@ -32,7 +32,7 @@ typedef struct {
 } Casa;
 
 /*
-    Verifica se existe pelo menos uma captura
+    verifica se existe pelo menos uma captura
     possível para a peça indicada.
 */
 short int da_para_comer(
@@ -42,9 +42,9 @@ short int da_para_comer(
 );
 
 /*
-    Executa uma jogada.
+    executa uma jogada.
 
-    Retornos:
+    retornos:
     -1 -> jogada inválida
      0 -> movimento simples realizado
      1 -> captura realizada

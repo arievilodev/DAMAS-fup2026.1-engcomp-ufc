@@ -1,6 +1,4 @@
 /*
-    jogo.c
-
     Created by Arthur de Araujo Custodio on 23/06/2026.
     Copyright © 2026 
         Ana Rebeca Mendes de Souza (602242);
