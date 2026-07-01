@@ -12,7 +12,9 @@
 #include "tabuleiro.h"
 #include "jogada.h"
 
+
 /* Conversores */
+
 int letra_para_numero(char c) {
     /* retorna a abscissa que a letra representa, por exemplo, A=0, B=1, ..., J=9 */
     return c-'A';
@@ -23,7 +25,9 @@ int char_para_numero(char n) {
     return n-'0';
 }
 
+
 /* Verificadores (exeto os de vitoria) */
+
 short int eh_letra_tabuleiro(char c) {
     /* retorna se eh uma letra dentro do tabuleiro */
     return c >= 'A' && c <= 'J';
@@ -34,6 +38,7 @@ short int eh_numero_tabuleiro(char n) {
     return n >= '0' && n <= '9';
 }
 
+/* retorna se o carctere nao esta no vetor */
 short int not_in_str(char *v, char c) {
     /* retorna se o carctere nao esta no vetor */
     int i=0;
@@ -71,7 +76,9 @@ short int da_para_mover_1_casa(PontTab tabuleiro, Jogador jogador, Casa casa) {
     return 0;
 }
 
+
 /* Modificadores */
+
 short int pecas_jogador_id(Jogador *jogador, char id) {
     /* Retorna 1 se nao alterar jogador, se sim retorna 0 */
     switch (id) {
@@ -117,7 +124,9 @@ short int peca_para_dama(PontTab tabuleiro, Jogador jogador) {
     return 0;
 }
 
+
 /* Verificadores de vitoria */
+
 short int verifica_derrota_por_afogamento(PontTab tabuleiro, Jogador jogador) {
     Casa casa;
     /* Pecorre o tabuleiro ate o final ou ate as pecas acabarem */
@@ -141,11 +150,13 @@ short int verifica_vitoria_por_qtd(PontTab tabuleiro, Jogador jogador) {
     return 1;
 }
 
+
 /* Impressao em caso de jogada invalida */
 void jogada_invalida(PontTab tabuleiro) {
     imprimir_tabuleiro(tabuleiro);
     printf("Jogada invalida.\n");
 }
+
 
 /* Jogo jogador contra jogador */
 short int jogo_JxJ() {
@@ -153,7 +164,9 @@ short int jogo_JxJ() {
     short int jogada_valida, jog; /* auxiliar para receber retorno de jogada() */
     char vitorioso = '\0',
         c, /* auxiliar para deletar buffer exedente */
+        entrada_comeca[3], /* sao 3 contando \n e \0 */
         comeca,
+        entrada_sair[3], /* sao 3 contando \n e \0 */
         sair,
         entrada_jogada[8]; /* sao 8 contando \n e \0 */
     PontTab tabuleiro = criar_tabuleiro();
@@ -162,14 +175,24 @@ short int jogo_JxJ() {
 
     imprimir_tabuleiro(tabuleiro);
 
+    /* Recebe a entrada de quem comeca */
     printf("Digite quem comeca o jogo (\"C\", para cima ou \"B\", para baixo): ");
-    scanf("%c", &comeca);
-    while ((c = getchar()) != '\n' && c != EOF); /* Limpa o buffer */
+    if (fgets(entrada_comeca, sizeof(entrada_comeca), stdin) != NULL) {
+        if (not_in_str(entrada_comeca, '\n'))
+            while ((c = getchar()) != '\n' && c != EOF); /* Descarta o buffer */
+        else
+            comeca = entrada_comeca[0];
+    }
     while(pecas_jogador_id(&jogador, comeca)) {
         printf("\nEntrada invalida.\nDigite quem comeca o jogo (\"C\", para cima ou \"B\", para baixo): ");
-        scanf("%c", &comeca);
-        while ((c = getchar()) != '\n' && c != EOF);
+        if (fgets(entrada_comeca, sizeof(entrada_comeca), stdin) != NULL) {
+            if (not_in_str(entrada_comeca, '\n'))
+                while ((c = getchar()) != '\n' && c != EOF); /* Descarta o buffer */
+            else
+                comeca = entrada_comeca[0];
+        }
     }
+
     /* Loop das jogadas */
     while (vitorioso == '\0') {
         /* Faz a leitura da jogada */
@@ -224,17 +247,29 @@ short int jogo_JxJ() {
     printf("O vencedor eh o usuario de ");
     printf((vitorioso == 'C') ? "CIMA.\n" : "BAIXO.\n");
 
+    /* Recebe a entrada de se quer continuar ou nao */
     printf("\nDesejam jogar novamente? (\"s\", para sim ou \"n\", para nao): ");
-    scanf("%c", &sair);
-    while(sair != 's' && sair != 'n') {
+    if (fgets(entrada_sair, sizeof(entrada_sair), stdin) != NULL) {
+        if (not_in_str(entrada_sair, '\n'))
+            while ((c = getchar()) != '\n' && c != EOF); /* Descarta o buffer */
+        else
+            sair = entrada_sair[0];
+    }
+    while (sair != 's' && sair != 'n') {
         printf("\nEntrada invalida\nDesejam jogar novamente? (\"s\", para sim ou \"n\", para nao): ");
-        scanf("%c", &sair);
+        if (fgets(entrada_sair, sizeof(entrada_sair), stdin) != NULL) {
+            if (not_in_str(entrada_sair, '\n'))
+                while ((c = getchar()) != '\n' && c != EOF); /* Descarta o buffer */
+            else
+                sair = entrada_sair[0];
+        }
     }
     return sair=='s';
 }
 
 
-/* Modificadores */
+/* Modificador */
+
 void zerar_entrada_jogada(char* entrada) {
     int t = 6; /* tamanho de entrada_jogada */
     while(t--) {
@@ -242,10 +277,12 @@ void zerar_entrada_jogada(char* entrada) {
     }
 } 
 
+
 /* Impressao em caso de jogada invalida */
 void jogada_invalida_linha(int linha) {
     printf("Jogada invalida na linha %d do arquivo de entrada.\n", linha);
 }
+
 
 /* Jogo offline */
 void jogo_offline(FILE* arquivo) {
