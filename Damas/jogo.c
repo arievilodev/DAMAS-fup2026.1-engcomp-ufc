@@ -12,6 +12,18 @@
 #include "tabuleiro.h"
 #include "jogada.h"
 
+/* Conversores */
+int letra_para_numero(char c) {
+    /* retorna a abscissa que a letra representa, por exemplo, A=0, B=1, ..., J=9 */
+    return c-'A';
+}
+
+int char_para_numero(char n) {
+    /* retorna a ordenada que o numero representa, no caso, o proprio numero */
+    return n-'0';
+}
+
+/* Verificadores (exeto os de vitoria) */
 short int eh_letra_tabuleiro(char c) {
     /* retorna se eh uma letra dentro do tabuleiro */
     return c >= 'A' && c <= 'J';
@@ -28,16 +40,6 @@ short int not_in_str(char *v, char c) {
     while(v[i] != '\0')
         if (v[i++] == c) return 0;
     return 1;
-}
-
-int letra_para_numero(char c) {
-    /* retorna a abscissa que a letra representa, por exemplo, A=0, B=1, ..., J=9 */
-    return c-'A';
-}
-
-int char_para_numero(char n) {
-    /* retorna a ordenada que o numero representa, no caso, o proprio numero */
-    return n-'0';
 }
 
 short int da_para_mover_1_casa(PontTab tabuleiro, Jogador jogador, Casa casa) {
@@ -69,18 +71,7 @@ short int da_para_mover_1_casa(PontTab tabuleiro, Jogador jogador, Casa casa) {
     return 0;
 }
 
-short int verifica_derrota_por_afogamento(PontTab tabuleiro, Jogador jogador) {
-    Casa casa;
-    /* Pecorre o tabuleiro ate o final ou ate as pecas acabarem */
-    for (casa.lin=0; casa.lin<10; casa.lin++)
-        for (casa.col=0; casa.col<10; casa.col++)
-            if (tabuleiro[casa.lin][casa.col] == jogador.peao || tabuleiro[casa.lin][casa.col] == jogador.dama) {
-                if (da_para_mover_1_casa(tabuleiro, jogador, casa)) return 0; 
-                if (da_para_comer(tabuleiro, jogador, casa)) return 0;
-            }
-    return 1;
-}
-
+/* Modificadores */
 short int pecas_jogador_id(Jogador *jogador, char id) {
     /* Retorna 1 se nao alterar jogador, se sim retorna 0 */
     switch (id) {
@@ -126,6 +117,19 @@ short int peca_para_dama(PontTab tabuleiro, Jogador jogador) {
     return 0;
 }
 
+/* Verificadores de vitoria */
+short int verifica_derrota_por_afogamento(PontTab tabuleiro, Jogador jogador) {
+    Casa casa;
+    /* Pecorre o tabuleiro ate o final ou ate as pecas acabarem */
+    for (casa.lin=0; casa.lin<10; casa.lin++)
+        for (casa.col=0; casa.col<10; casa.col++)
+            if (tabuleiro[casa.lin][casa.col] == jogador.peao || tabuleiro[casa.lin][casa.col] == jogador.dama) {
+                if (da_para_mover_1_casa(tabuleiro, jogador, casa)) return 0; 
+                if (da_para_comer(tabuleiro, jogador, casa)) return 0;
+            }
+    return 1;
+}
+
 short int verifica_vitoria_por_qtd(PontTab tabuleiro, Jogador jogador) {
     int i, j;
     Jogador oponente;
@@ -137,18 +141,24 @@ short int verifica_vitoria_por_qtd(PontTab tabuleiro, Jogador jogador) {
     return 1;
 }
 
+/* Impressao em caso de jogada invalida */
+void jogada_invalida(PontTab tabuleiro) {
+    imprimir_tabuleiro(tabuleiro);
+    printf("Jogada invalida.\n");
+}
+
+/* Jogo jogador contra jogador */
 short int jogo_JxJ() {
-    short int jogada_valida, jog /* auxiliar para receber retorno de jogada() */;
+    /* Retorna se quer jogar novamente */
+    short int jogada_valida, jog; /* auxiliar para receber retorno de jogada() */
     char vitorioso = '\0',
         c, /* auxiliar para deletar buffer exedente */
         comeca,
         sair,
         entrada_jogada[8]; /* sao 8 contando \n e \0 */
-    PontTab tabuleiro;
+    PontTab tabuleiro = criar_tabuleiro();
     Jogador jogador;
     Casa casa_inicial, casa_final;
-
-    tabuleiro = criar_tabuleiro();
 
     imprimir_tabuleiro(tabuleiro);
 
@@ -172,8 +182,7 @@ short int jogo_JxJ() {
                     if (not_in_str(entrada_jogada, '\n')) {
                         /* Descarta o buffer */
                         while ((c = getchar()) != '\n' && c != EOF);
-                        imprimir_tabuleiro(tabuleiro);
-                        printf("Jogada invalida.\n"); /* Se tiver mais caracteres na entrada que 6 */
+                        jogada_invalida(tabuleiro); /* Se tiver mais caracteres na entrada que 6 */
                     } else if (
                         eh_letra_tabuleiro(entrada_jogada[0]) &&
                         eh_numero_tabuleiro(entrada_jogada[1]) &&
@@ -188,7 +197,7 @@ short int jogo_JxJ() {
 
                         jog = jogada(tabuleiro, jogador, casa_inicial, casa_final);
                         if (jog != -1) {
-                            peca_para_dama(tabuleiro, jogador);
+                            peca_para_dama(tabuleiro, jogador); /* promove peao na ultima ou primeira linha para dama */
                             if (jog) {
                                 if(verifica_vitoria_por_qtd(tabuleiro, jogador))
                                     vitorioso=jogador.id;
@@ -197,16 +206,13 @@ short int jogo_JxJ() {
                             }
                             jogada_valida = 1;
                         } else {
-                            imprimir_tabuleiro(tabuleiro);
-                            printf("Jogada invalida.\n"); /* Se nao for uma jogada permitida */
+                            jogada_invalida(tabuleiro); /* Se nao for uma jogada permitida */
                         }
                     } else {
-                        imprimir_tabuleiro(tabuleiro);
-                        printf("Jogada invalida.\n"); /* Se nao estiver no padrao A0--B0 */
+                        jogada_invalida(tabuleiro); /* Se nao estiver no padrao A0--B0 */
                     }
                 } else {
-                    imprimir_tabuleiro(tabuleiro);
-                    printf("Jogada invalida.\n"); /* Se a entrada for EOF */
+                    jogada_invalida(tabuleiro); /* Se a entrada for EOF */
                 }
             }
         } else {
@@ -227,7 +233,106 @@ short int jogo_JxJ() {
     return sair=='s';
 }
 
+
+/* Modificadores */
+void zerar_entrada_jogada(char* entrada) {
+    int t = 6; /* tamanho de entrada_jogada */
+    while(t--) {
+        entrada[t] = '\0';
+    }
+} 
+
+/* Impressao em caso de jogada invalida */
+void jogada_invalida_linha(int linha) {
+    printf("Jogada invalida na linha %d do arquivo de entrada.\n", linha);
+}
+
+/* Jogo offline */
 void jogo_offline(FILE* arquivo) {
-    char c; /* auxiliar para coleta dos caracteres do arquivo */
-    int linha=0; /* acumulador para saber em qual linha esta */
+    char vitorioso = '\0',
+        c, /* auxiliar para coleta dos caracteres do arquivo */
+        comeca,
+        entrada_jogada[6]; /* sao 6 porque não preciso do /0, pois nao utilizarei como string */
+    PontTab tabuleiro = criar_tabuleiro();
+    Jogador jogador;
+    Casa casa_inicial, casa_final;
+    int qtd_caracteres=0, qtd_pecas_C=0, qtd_pecas_B=0, linha=2; /* acumulador para saber em qual linha esta */
+    short int jog; /* auxiliar para receber retorno de jogada() */
+
+    if (((comeca = fgetc(arquivo)) != EOF) && (((c = fgetc(arquivo)) == '\n') || (c == EOF))) {
+        if (comeca == 'C' || comeca == 'B') {
+            pecas_jogador_id(&jogador, comeca);
+            zerar_entrada_jogada(entrada_jogada);
+            /* pecorre o arquivo caractere a caracter */
+            while ((c = fgetc(arquivo)) != EOF) {
+                if (vitorioso == '\0') {
+                    if (!verifica_derrota_por_afogamento(tabuleiro, jogador)) {
+                        /* lê a linha e armazena até encher entrada_jogada */
+                        if (c != '\n') {
+                            if (qtd_caracteres<6)
+                                entrada_jogada[qtd_caracteres++] = c;
+                            else qtd_caracteres++;
+                        } else { /* faz a jogada */
+                            if (qtd_caracteres == 6) {
+                                if (
+                                    eh_letra_tabuleiro(entrada_jogada[0]) &&
+                                    eh_numero_tabuleiro(entrada_jogada[1]) &&
+                                    entrada_jogada[2] == '-' && entrada_jogada[3] == '-' &&
+                                    eh_letra_tabuleiro(entrada_jogada[4]) &&
+                                    eh_numero_tabuleiro(entrada_jogada[5])
+                                ) {
+                                    casa_inicial.col = letra_para_numero(entrada_jogada[0]);
+                                    casa_inicial.lin = char_para_numero(entrada_jogada[1]);
+                                    casa_final.col = letra_para_numero(entrada_jogada[4]);
+                                    casa_final.lin = char_para_numero(entrada_jogada[5]);
+
+                                    jog = jogada(tabuleiro, jogador, casa_inicial, casa_final);
+                                    if (jog != -1) {
+                                        peca_para_dama(tabuleiro, jogador); /* promove peao na ultima ou primeira linhapara dama */
+                                        if (jog) {
+                                            if (jogador.id == 'C') qtd_pecas_C++;
+                                            else qtd_pecas_B++;
+                                            
+                                            if(verifica_vitoria_por_qtd(tabuleiro, jogador))
+                                                vitorioso=jogador.id;
+                                        } else
+                                            trocar_jogador(&jogador);
+                                    } else
+                                        jogada_invalida_linha(linha); /* Se nao for uma jogada permitida */
+                                } else
+                                    jogada_invalida_linha(linha); /* Se nao estiver no padrao A0--B0 */
+                            } else
+                                jogada_invalida_linha(linha); /* Se a linha nao tiver 6 caracteres */
+                            
+                            zerar_entrada_jogada(entrada_jogada);
+                            qtd_caracteres=0;
+                            linha++;
+                        }
+                    } else {
+                        trocar_jogador(&jogador);
+                        vitorioso = jogador.id;
+                        if (c == '\n') jogada_invalida_linha(linha++); /* Se o jogador ja tiver ganhado nao aceita mais jogadas */
+                    }
+                } else
+                    if (c == '\n') jogada_invalida_linha(linha++); /* Se o jogador ja tiver ganhado nao aceita mais jogadas */
+            }
+
+            /* existe o risco de a jogada terminar com EOF e nao ser verificado o afogamento */
+            if (vitorioso == '\0') {
+                if (verifica_derrota_por_afogamento(tabuleiro, jogador)) {
+                        trocar_jogador(&jogador);
+                        vitorioso = jogador.id;
+                }
+            }
+
+            imprimir_tabuleiro(tabuleiro);
+            printf("Cima = %d / Baixo = %d\n", qtd_pecas_C, qtd_pecas_B);
+            if (vitorioso != '\0') {
+                printf("O vencedor eh o usuario de ");
+                printf((vitorioso == 'C') ? "CIMA.\n" : "BAIXO.\n");
+            }
+        } else
+            printf("Jogador inicial invalido.\n");
+    } else
+        printf("Jogador inicial invalido.\n");
 }
