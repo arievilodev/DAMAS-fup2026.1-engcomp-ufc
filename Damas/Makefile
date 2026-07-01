@@ -16,7 +16,7 @@ jogada.o: jogada.c jogada.h tabuleiro.h
 		gcc -std=c99 -Wall -Wextra -c jogada.c
 
 clean:
-		rm -f *.o damas.exe damas
+		rm -f *.o *.exe damas
 
 clean_win:
-		del /Q *.o *.exe damas
+		del /Q *.o damas.exe damas
