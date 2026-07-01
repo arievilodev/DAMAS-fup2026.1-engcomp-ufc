@@ -105,23 +105,6 @@ short int trocar_jogador(Jogador *jogador) {
     return 1;
 }
 
-short int peca_para_dama(PontTab tabuleiro, Jogador jogador) {
-    int linha, j; /* linha que vai ser verificada se da para transformar em dama */
-    if (jogador.id == 'C')
-        linha = 9;
-    else if (jogador.id == 'B')
-        linha = 0;
-    else
-        return -1;
-    
-    for (j=0; j<10; j++)
-        if (tabuleiro[linha][j] == jogador.peao) {
-            tabuleiro[linha][j] = jogador.dama;
-            return 1;
-        }
-    return 0;
-}
-
 
 /* Verificadores de vitoria */
 
@@ -218,7 +201,6 @@ short int jogo_JxJ() {
 
                         jog = jogada(tabuleiro, jogador, casa_inicial, casa_final);
                         if (jog != -1) {
-                            peca_para_dama(tabuleiro, jogador); /* promove peao na ultima ou primeira linha para dama */
                             if (jog) {
                                 if(verifica_vitoria_por_qtd(tabuleiro, jogador))
                                     vitorioso=jogador.id;
@@ -323,7 +305,6 @@ void jogo_offline(FILE* arquivo) {
 
                                     jog = jogada(tabuleiro, jogador, casa_inicial, casa_final);
                                     if (jog != -1) {
-                                        peca_para_dama(tabuleiro, jogador); /* promove peao na ultima ou primeira linhapara dama */
                                         if (jog) {
                                             if (jogador.id == 'C') qtd_pecas_C++;
                                             else qtd_pecas_B++;
