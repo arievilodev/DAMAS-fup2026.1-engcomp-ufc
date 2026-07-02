@@ -1,7 +1,7 @@
 #   
 #	Codigo feito em 2026.1 pelos estudantes
 #	Ana Rebeca Mendes de Souza (602242)
-#	Arthur Araujo Custodio (604827)
+#	Arthur de Araujo Custodio (604827)
 #	Rafael Calisto Oliveira da Silva (606478)
 #
 
