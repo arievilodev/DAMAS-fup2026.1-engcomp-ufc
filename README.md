@@ -3,7 +3,7 @@ Repositório do trabalho final da disciplina de Fundamentos de Programação, do
 
 # Grafo de dependências de compilação
 
-
+<img width="4648" height="2160" alt="Image" src="https://github.com/user-attachments/assets/2eb76b15-6ffd-48b7-a798-341418b1d616" />
 
 # Linhas para compilação e execução
 
